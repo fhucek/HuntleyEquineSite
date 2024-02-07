@@ -4,5 +4,8 @@
 `$ go build`
 `$./huntleyequine.com`
 
+## Access
+It's running on port 1954
+
 pharmacy link:
 https://huntleyequine.vetsfirstchoice.com/
