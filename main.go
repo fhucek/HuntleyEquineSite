@@ -25,16 +25,17 @@ func setupLogger(logFileName string) *os.File {
 
 func loggingMiddleware(next http.Handler) http.Handler {
 	hndlr := func(w http.ResponseWriter, r *http.Request) {
-		log.Println(r.RemoteAddr + " requesting " + r.Method + " " + r.URL.Path)
+		remote_addr := r.Header.Get("X-Real-IP") // nginx header for real client IP
+		log.Println(remote_addr + " requesting " + r.Method + " " + r.URL.Path)
 		next.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(hndlr)
 }
 
 func main() {
-	f := setupLogger("./huntleyequine.com.log")
+	f := setupLogger("/home/frank/logs/huntleyequine.com.log")
 	defer f.Close() // needs to be closed in this scope
 
-	http.Handle("/", loggingMiddleware(http.FileServer(http.Dir("./public"))))
+	http.Handle("/", loggingMiddleware(http.FileServer(http.Dir("/home/frank/Code/util-servers/huntleyequine.com/public"))))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", PORT), nil))
 }
